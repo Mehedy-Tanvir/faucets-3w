@@ -1,0 +1,22 @@
+.brand-name {
+  color: blueviolet;
+  font-size: 24px;
+  font-weight: 600;
+}
+.avatar {
+  font-size: 24px;
+}
+.dropdown-auth {
+  background-color: transparent;
+  border-color: transparent;
+  color: gray;
+}
+.wallet-button {
+  border: 2px solid blueviolet;
+  padding: 8px;
+  color: blueviolet;
+  font-weight: 500;
+}
+.bg-white {
+  background-color: white;
+}
