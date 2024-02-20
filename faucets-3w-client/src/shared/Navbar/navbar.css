@@ -20,3 +20,22 @@
 .bg-white {
   background-color: white;
 }
+.modal-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 6px;
+}
+.modal-item {
+  background-color: rgb(215, 210, 219);
+  height: 200px;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+h4 {
+  color: blueviolet;
+  font-weight: 500;
+  font-size: 18px;
+}

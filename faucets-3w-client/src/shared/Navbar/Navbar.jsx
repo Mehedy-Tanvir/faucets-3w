@@ -6,9 +6,15 @@ import "./navbar.css";
 import { useState } from "react";
 import Dropdown from "react-bootstrap/Dropdown";
 import { RxAvatar } from "react-icons/rx";
+import Button from "react-bootstrap/Button";
+import Modal from "react-bootstrap/Modal";
 
 const Navbar = () => {
   const [walletName, setWalletName] = useState("Arbitrum Rinkeby");
+  const [show, setShow] = useState(false);
+
+  const handleClose = () => setShow(false);
+  const handleShow = () => setShow(true);
   return (
     <BootstrapNavbar
       collapseOnSelect
@@ -61,8 +67,28 @@ const Navbar = () => {
               </NavDropdown.Item>
             </NavDropdown>
             <Nav.Link href="#deets">
-              <span className="wallet-button">Connect Wallet</span>
+              <span onClick={handleShow} className="wallet-button">
+                Connect Wallet
+              </span>
             </Nav.Link>
+            <Modal show={show} onHide={handleClose}>
+              <Modal.Header closeButton>
+                <Modal.Title>
+                  {" "}
+                  <strong>Connect your wallet</strong>
+                </Modal.Title>
+              </Modal.Header>
+              <Modal.Body>
+                <div className="modal-container">
+                  <div className="modal-item">
+                    <h4>MetaMask</h4>
+                  </div>
+                  <div className="modal-item">
+                    <h4>WalletConnect</h4>
+                  </div>
+                </div>
+              </Modal.Body>
+            </Modal>
             <Dropdown>
               <Dropdown.Toggle className="dropdown-auth" id="dropdown-basic">
                 <RxAvatar className="avatar" />
