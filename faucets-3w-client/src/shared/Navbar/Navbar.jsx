@@ -128,9 +128,11 @@ const Navbar = () => {
                 <Dropdown.Item>
                   <Link to="/">Home</Link>
                 </Dropdown.Item>
-                <Dropdown.Item>
-                  <Link to="/admin">Admin</Link>
-                </Dropdown.Item>
+                {user?.role == "admin" && !loading && (
+                  <Dropdown.Item>
+                    <Link to="/admin">Admin</Link>
+                  </Dropdown.Item>
+                )}
                 {!user && !loading && (
                   <Dropdown.Item>
                     <Link to="/login">Log In</Link>
