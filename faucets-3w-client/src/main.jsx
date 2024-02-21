@@ -10,15 +10,14 @@ import Register from "./pages/Register/Register";
 import Login from "./pages/Login/Login";
 import AuthProvider from "./Provider/AuthProvider";
 import { Toaster } from "react-hot-toast";
+import Admin from "./pages/Admin/Admin";
+import PrivateRoutes from "./routes/PrivateRoutes/PrivateRoutes";
+import AuthPrivateRoutes from "./routes/AuthPrivateRoutes/AuthPrivateRoutes";
 
 const router = createBrowserRouter([
   {
     path: "/",
-    element: (
-      <AuthProvider>
-        <MainLayout></MainLayout>
-      </AuthProvider>
-    ),
+    element: <MainLayout></MainLayout>,
     children: [
       {
         index: true,
@@ -26,11 +25,27 @@ const router = createBrowserRouter([
       },
       {
         path: "register",
-        element: <Register></Register>,
+        element: (
+          <AuthPrivateRoutes>
+            <Register></Register>
+          </AuthPrivateRoutes>
+        ),
       },
       {
         path: "login",
-        element: <Login></Login>,
+        element: (
+          <AuthPrivateRoutes>
+            <Login></Login>
+          </AuthPrivateRoutes>
+        ),
+      },
+      {
+        path: "admin",
+        element: (
+          <PrivateRoutes>
+            <Admin></Admin>
+          </PrivateRoutes>
+        ),
       },
     ],
   },
@@ -38,7 +53,10 @@ const router = createBrowserRouter([
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
-    <Toaster></Toaster>
-    <RouterProvider router={router} />
+    <AuthProvider>
+      {" "}
+      <Toaster></Toaster>
+      <RouterProvider router={router} />
+    </AuthProvider>
   </React.StrictMode>
 );

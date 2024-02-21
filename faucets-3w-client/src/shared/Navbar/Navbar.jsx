@@ -10,7 +10,6 @@ import Modal from "react-bootstrap/Modal";
 import { Link, useNavigate } from "react-router-dom";
 import { AuthContext } from "../../Provider/AuthProvider";
 import toast from "react-hot-toast";
-import useAxiosSecure from "../../Hooks/useAxiosSecure";
 
 const Navbar = () => {
   const [walletName, setWalletName] = useState("Arbitrum Rinkeby");
@@ -21,27 +20,20 @@ const Navbar = () => {
 
   //   logging out user
   const navigate = useNavigate();
-  const axiosSecure = useAxiosSecure();
-  const { user, loading, setUser } = useContext(AuthContext);
+  const { user, loading, setUser, setLoading } = useContext(AuthContext);
+  console.log("from navbar", user);
   const logout = async () => {
+    setLoading(true);
     try {
-      //   const token = localStorage.getItem("token");
-
-      axiosSecure
-        .post("/logout")
-        .then((res) => {
-          localStorage.removeItem("token"); // Remove token from localStorage
-          console.log(res.data);
-          setUser(null);
-          toast.success("User logged out");
-          navigate("/");
-        })
-        .catch((error) => {
-          console.log(error);
-          setUser(null);
-        });
+      localStorage.removeItem("token"); // Remove token from localStorage
+      setUser(null);
+      setLoading(false);
+      toast.success("User logged out");
+      navigate("/");
     } catch (error) {
       console.error("Error:", error);
+      setUser(null);
+      setLoading(false);
     }
   };
   return (

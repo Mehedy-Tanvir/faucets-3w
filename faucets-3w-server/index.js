@@ -86,8 +86,7 @@ app.get("/verifyAuth", verifyToken, async (req, res) => {
 
     if (existingUser) {
       return res.json({
-        email: existingUser.email,
-        name: existingUser.name,
+        user: existingUser,
       });
     }
   } catch (error) {

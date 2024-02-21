@@ -2,42 +2,42 @@ import { Link, useNavigate } from "react-router-dom";
 import "./login.css";
 import { FaGoogle } from "react-icons/fa";
 import { useContext } from "react";
-import useAxiosPublic from "../../Hooks/useAxiosPublic";
-import { AuthContext } from "../../Provider/AuthProvider";
-import toast from "react-hot-toast";
-const Login = () => {
-  const authInfo = useContext(AuthContext);
 
-  const axiosPublic = useAxiosPublic();
+import toast from "react-hot-toast";
+import { AuthContext } from "../../Provider/AuthProvider";
+const Login = () => {
+  const { setUser, setLoading } = useContext(AuthContext);
+
   const navigate = useNavigate();
 
-  const handleSubmit = (event) => {
-    console.log(authInfo);
-    authInfo?.setLoading(true);
-    event.preventDefault();
-    const form = event.target;
-    const email = form.email.value;
-    const password = form.password.value;
-
-    const userInfo = {
-      password,
-      email,
-    };
-    axiosPublic
-      .post("/jwt", userInfo)
-      .then((res) => {
-        localStorage.setItem("token", res.data.token);
-        authInfo?.setUser(res.data.user);
-        authInfo?.setLoading(false);
-
-        toast.success("User logged in successfully");
+  const handleSubmit = (e) => {
+    setLoading(true);
+    e.preventDefault();
+    const email = e.target.email.value;
+    const password = e.target.password.value;
+    console.log(email, password);
+    // sending post request to server for login
+    fetch("http://localhost:3000/jwt", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        email,
+        password,
+        // expiresInMins: 60, // optional
+      }),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        // saving the token to local storage
+        localStorage.setItem("token", data.token);
+        setUser(data.user);
+        setLoading(false);
+        toast.success("User logged in...");
         navigate("/");
       })
       .catch((error) => {
         console.log(error);
-        authInfo?.setUser(null);
-        authInfo?.setLoading(false);
-        toast.error("User was not logged in");
+        toast.error("Unable to log in...");
       });
   };
 
