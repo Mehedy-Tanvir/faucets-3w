@@ -27,15 +27,25 @@
   gap: 6px;
 }
 .modal-item {
-  background-color: rgb(215, 210, 219);
+  background-color: #f5f7fd;
   height: 200px;
   width: 100%;
   display: flex;
   justify-content: center;
   align-items: center;
+  flex-direction: column;
+  gap: 5px;
+}
+.modal-item-img {
+  height: 100px;
+  width: 100px;
 }
 h4 {
   color: blueviolet;
   font-weight: 500;
   font-size: 18px;
+}
+a {
+  text-decoration: none;
+  color: #5c5c5c;
 }

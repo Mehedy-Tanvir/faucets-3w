@@ -3,11 +3,14 @@ import Nav from "react-bootstrap/Nav";
 import BootstrapNavbar from "react-bootstrap/Navbar";
 import NavDropdown from "react-bootstrap/NavDropdown";
 import "./navbar.css";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import Dropdown from "react-bootstrap/Dropdown";
 import { RxAvatar } from "react-icons/rx";
-import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
+import { Link, useNavigate } from "react-router-dom";
+import { AuthContext } from "../../Provider/AuthProvider";
+import toast from "react-hot-toast";
+import useAxiosSecure from "../../Hooks/useAxiosSecure";
 
 const Navbar = () => {
   const [walletName, setWalletName] = useState("Arbitrum Rinkeby");
@@ -15,6 +18,32 @@ const Navbar = () => {
 
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
+
+  //   logging out user
+  const navigate = useNavigate();
+  const axiosSecure = useAxiosSecure();
+  const { user, loading, setUser } = useContext(AuthContext);
+  const logout = async () => {
+    try {
+      //   const token = localStorage.getItem("token");
+
+      axiosSecure
+        .post("/logout")
+        .then((res) => {
+          localStorage.removeItem("token"); // Remove token from localStorage
+          console.log(res.data);
+          setUser(null);
+          toast.success("User logged out");
+          navigate("/");
+        })
+        .catch((error) => {
+          console.log(error);
+          setUser(null);
+        });
+    } catch (error) {
+      console.error("Error:", error);
+    }
+  };
   return (
     <BootstrapNavbar
       collapseOnSelect
@@ -81,9 +110,11 @@ const Navbar = () => {
               <Modal.Body>
                 <div className="modal-container">
                   <div className="modal-item">
+                    <img className="modal-item-img" src="/fox.png" alt="" />
                     <h4>MetaMask</h4>
                   </div>
                   <div className="modal-item">
+                    <img className="modal-item-img" src="/wallet.svg" alt="" />
                     <h4>WalletConnect</h4>
                   </div>
                 </div>
@@ -93,11 +124,27 @@ const Navbar = () => {
               <Dropdown.Toggle className="dropdown-auth" id="dropdown-basic">
                 <RxAvatar className="avatar" />
               </Dropdown.Toggle>
-
               <Dropdown.Menu>
-                <Dropdown.Item href="#/action-1">Log In</Dropdown.Item>
-                <Dropdown.Item href="#/action-2">Sign Up</Dropdown.Item>
-                <Dropdown.Item href="#/action-3">FAQ</Dropdown.Item>
+                <Dropdown.Item>
+                  <Link to="/">Home</Link>
+                </Dropdown.Item>
+                <Dropdown.Item>
+                  <Link to="/admin">Admin</Link>
+                </Dropdown.Item>
+                {!user && !loading && (
+                  <Dropdown.Item>
+                    <Link to="/login">Log In</Link>
+                  </Dropdown.Item>
+                )}
+                {!user && !loading && (
+                  <Dropdown.Item>
+                    <Link to="/register">Sign Up</Link>
+                  </Dropdown.Item>
+                )}
+
+                {user && !loading && (
+                  <Dropdown.Item onClick={logout}>Logout</Dropdown.Item>
+                )}
               </Dropdown.Menu>
             </Dropdown>
           </Nav>
