@@ -10,6 +10,8 @@ const RequestForm = () => {
   const [captchaValue, setCaptchaValue] = useState(null);
 
   const [requests, setRequests] = useState([]);
+
+  // fetching request history
   useEffect(() => {
     fetch("http://localhost:3000/requests", {
       method: "GET",
@@ -24,7 +26,7 @@ const RequestForm = () => {
         console.log(error);
       });
   }, []);
-
+  // sending wallet request
   const handleSubmit = async (e) => {
     e.preventDefault();
     const walletAddress = e.target.walletAddress.value;
@@ -46,7 +48,7 @@ const RequestForm = () => {
           },
           body: JSON.stringify(requestInfo),
         });
-
+        // updating ui request states
         if (response.ok) {
           const responseData = await response.json();
           console.log(responseData);

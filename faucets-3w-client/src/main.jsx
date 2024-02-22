@@ -13,7 +13,7 @@ import { Toaster } from "react-hot-toast";
 import Admin from "./pages/Admin/Admin";
 import PrivateRoutes from "./routes/PrivateRoutes/PrivateRoutes";
 import AuthPrivateRoutes from "./routes/AuthPrivateRoutes/AuthPrivateRoutes";
-
+// routes defined
 const router = createBrowserRouter([
   {
     path: "/",

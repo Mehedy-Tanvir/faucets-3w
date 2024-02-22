@@ -4,7 +4,7 @@ import { Navigate, useLocation } from "react-router-dom";
 import { AuthContext } from "../../Provider/AuthProvider";
 import Spinner from "react-bootstrap/Spinner";
 import "../routes.css";
-
+// this route is for admin only
 const PrivateRoutes = ({ children }) => {
   const location = useLocation();
   // Getting the states using context API

@@ -7,6 +7,7 @@ import "./home.css";
 const Home = () => {
   const location = useLocation();
   const { setUser, setLoading, walletName } = useContext(AuthContext);
+  // parsing query to find token and user info
   useEffect(() => {
     setLoading(true);
     const searchParams = new URLSearchParams(location.search);

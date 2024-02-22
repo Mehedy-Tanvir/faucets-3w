@@ -6,7 +6,7 @@ import toast from "react-hot-toast";
 const Register = () => {
   const axiosPublic = useAxiosPublic();
   const navigate = useNavigate();
-
+  // registering user
   const handleSubmit = (event) => {
     event.preventDefault();
     const form = event.target;

@@ -5,6 +5,7 @@ import PropTypes from "prop-types";
 import { AuthContext } from "../../Provider/AuthProvider";
 import Spinner from "react-bootstrap/Spinner";
 import "../routes.css";
+// it will make routes private when user is authenticated eg: login, register
 const AuthPrivateRoutes = ({ children }) => {
   const location = useLocation();
   // getting the states using context api

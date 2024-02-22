@@ -7,7 +7,7 @@ const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [walletName, setWalletName] = useState("Arbitrum Rinkeby");
-
+  // getting user info with token
   useEffect(() => {
     setLoading(true);
     const token = localStorage.getItem("token");
@@ -33,7 +33,7 @@ const AuthProvider = ({ children }) => {
       setLoading(false);
     }
   }, []);
-
+  // storing states in a object
   const authInfo = {
     user,
     loading,
