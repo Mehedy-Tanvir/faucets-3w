@@ -95,6 +95,24 @@ app.get("/verifyAuth", verifyToken, async (req, res) => {
   }
 });
 
+// getting all users admin route
+app.get("/users", async (req, res) => {
+  try {
+    // If the request reaches here, it means the token is valid
+
+    const users = await User.find();
+
+    if (users) {
+      return res.json({
+        users,
+      });
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ success: false, message: "Internal server error" });
+  }
+});
+
 // user related apis
 // normal route
 // registering user
