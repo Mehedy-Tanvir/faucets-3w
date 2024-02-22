@@ -1,12 +1,29 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
 import ReCAPTCHA from "react-google-recaptcha";
 import "./requesForm.css";
 import toast from "react-hot-toast";
+import Table from "react-bootstrap/Table";
 
 const RequestForm = () => {
   const [captchaValue, setCaptchaValue] = useState(null);
+
+  const [requests, setRequests] = useState([]);
+  useEffect(() => {
+    fetch("http://localhost:3000/requests", {
+      method: "GET",
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        // updating the states
+        setRequests(data);
+      })
+      .catch((error) => {
+        setRequests([]);
+        console.log(error);
+      });
+  }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -33,6 +50,8 @@ const RequestForm = () => {
         if (response.ok) {
           const responseData = await response.json();
           console.log(responseData);
+          const currentRequests = [...requests, responseData];
+          setRequests(currentRequests);
           e.target.walletAddress.value = "";
           toast.success("Request sent successfully...");
         } else {
@@ -91,6 +110,33 @@ const RequestForm = () => {
           </Button>
         </Form>
       </div>
+      {requests?.length > 0 && (
+        <div className="request-table-container">
+          <h5>
+            <strong>Request History</strong>
+          </h5>
+          <Table striped bordered hover responsive>
+            <thead>
+              <tr>
+                <th>Sr.</th>
+                <th>Time</th>
+                <th>Amount</th>
+                <th>Hash</th>
+              </tr>
+            </thead>
+            <tbody>
+              {requests?.map((request, idx) => (
+                <tr key={idx}>
+                  <td>{idx + 1}</td>
+                  <td>{request?.sendingTime}</td>
+                  <td>{request?.amount}</td>
+                  <td>{request?.walletAddress}</td>
+                </tr>
+              ))}
+            </tbody>
+          </Table>
+        </div>
+      )}
     </div>
   );
 };

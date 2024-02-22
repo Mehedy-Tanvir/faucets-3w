@@ -192,6 +192,16 @@ app.post("/requests", async (req, res) => {
   }
 });
 
+app.get("/requests", async (req, res) => {
+  try {
+    const result = await Request.find();
+    res.send(result);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ success: false, message: "Internal server error" });
+  }
+});
+
 app.get("/", async (req, res) => {
   res.send("Welcome to Faucets server");
 });
