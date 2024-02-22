@@ -39,6 +39,32 @@ const verifyToken = async (req, res, next) => {
       .json({ success: false, message: "Unauthorized Access" });
   }
 };
+// verifying token and admin
+function verifyTokenAndRole(req, res, next) {
+  const token = req.header("Authorization");
+  if (!token)
+    return res
+      .status(401)
+      .json({ success: false, message: "Access denied. Token is required." });
+
+  try {
+    const verified = jwt.verify(token, process.env.TOKEN_SECRET);
+    req.user = verified;
+
+    // Check if user role is admin
+    if (req.user.role !== "admin") {
+      return res.status(403).json({
+        success: false,
+        message: "Access denied. User is not an admin.",
+      });
+    }
+
+    next();
+  } catch (error) {
+    console.error(error);
+    res.status(400).json({ success: false, message: "Invalid token." });
+  }
+}
 
 // Routes
 // logging in user
@@ -96,9 +122,17 @@ app.get("/verifyAuth", verifyToken, async (req, res) => {
 });
 
 // getting all users admin route
-app.get("/users", async (req, res) => {
+app.get("/users", verifyToken, async (req, res) => {
   try {
-    // If the request reaches here, it means the token is valid
+    console.log(req.user);
+    const user = await User.findOne({ email: req?.user?.email });
+
+    if (user?.role !== "admin") {
+      return res.status(403).json({
+        success: false,
+        message: "Access denied. User is not an admin.",
+      });
+    }
 
     const users = await User.find();
 

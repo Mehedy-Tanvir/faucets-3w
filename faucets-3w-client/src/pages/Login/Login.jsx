@@ -15,7 +15,6 @@ const Login = () => {
     e.preventDefault();
     const email = e.target.email.value;
     const password = e.target.password.value;
-    console.log(email, password);
     // sending post request to server for login
     fetch("http://localhost:3000/jwt", {
       method: "POST",
