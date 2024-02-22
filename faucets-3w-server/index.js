@@ -5,6 +5,7 @@ require("dotenv").config();
 const jwt = require("jsonwebtoken");
 const cookieParser = require("cookie-parser");
 const bcrypt = require("bcrypt");
+const { OAuth2Client } = require("google-auth-library");
 const port = process.env.PORT || 3000;
 const connectDB = require("./db/connectDB");
 const User = require("./models/User");
@@ -40,32 +41,95 @@ const verifyToken = async (req, res, next) => {
       .json({ success: false, message: "Unauthorized Access" });
   }
 };
-// verifying token and admin
-function verifyTokenAndRole(req, res, next) {
-  const token = req.header("Authorization");
-  if (!token)
-    return res
-      .status(401)
-      .json({ success: false, message: "Access denied. Token is required." });
 
-  try {
-    const verified = jwt.verify(token, process.env.TOKEN_SECRET);
-    req.user = verified;
+// oauth google sign in
+app.post("/authRequest", async (req, res) => {
+  // for dealing with cors
+  res.header("Access-Control-Allow-Origin", "http://localhost:5173");
+  res.header("Referrer-Policy", "no-referrer-when-downgrade");
 
-    // Check if user role is admin
-    if (req.user.role !== "admin") {
-      return res.status(403).json({
-        success: false,
-        message: "Access denied. User is not an admin.",
-      });
-    }
+  const redirectUrl = "http://127.0.0.1:3000/oauth";
+  // initializing oauth
+  const oAuth2Client = new OAuth2Client(
+    process.env.CLIENT_ID,
+    process.env.CLIENT_SECRET,
+    redirectUrl
+  );
+  // generating url to ping google
+  const authorizeUrl = oAuth2Client.generateAuthUrl({
+    access_type: "offline",
+    // in production it is only needed to force refresh token to be created
+    scope: "https://www.googleapis.com/auth/userinfo.profile openid",
+    prompt: "consent",
+  });
 
-    next();
-  } catch (error) {
-    console.error(error);
-    res.status(400).json({ success: false, message: "Invalid token." });
-  }
+  res.json({ url: authorizeUrl });
+});
+
+// getting OAuth user Data
+async function getUserData(access_token) {
+  // v3
+  const response = await fetch(
+    `https://www.googleapis.com/oauth2/v3/userinfo?access_token=${access_token}`
+  );
+  const data = await response.json();
+  // console.log("data", data);
+  return data;
 }
+
+// oauth
+app.get("/oauth", async (req, res) => {
+  const code = req.query.code;
+  // console.log(code);
+  let authToken;
+  let googleUser;
+  try {
+    const redirectUrl = "http://127.0.0.1:3000/oauth";
+    const oAuth2Client = new OAuth2Client(
+      process.env.CLIENT_ID,
+      process.env.CLIENT_SECRET,
+      redirectUrl
+    );
+    const res = await oAuth2Client.getToken(code);
+    await oAuth2Client.setCredentials(res.tokens);
+    console.log("Tokens acquired");
+    const user = oAuth2Client.credentials;
+    console.log("credentials", user);
+    const authenticatedUser = await getUserData(user.access_token);
+    console.log(authenticatedUser);
+    // creating jwt token for google signed in user
+    authToken = jwt.sign(
+      { email: authenticatedUser?.sub },
+      process.env.ACCESS_TOKEN_SECRET,
+      {
+        expiresIn: "10h",
+      }
+    );
+
+    // now storing authenticated user data in database
+    try {
+      const existingUser = await User.findOne({
+        email: authenticatedUser?.sub,
+      });
+      googleUser = existingUser;
+      if (!existingUser) {
+        googleUser = await User.create({
+          role: "user",
+          name: authenticatedUser?.name,
+          email: authenticatedUser?.sub,
+        });
+      }
+      console.log("google user", googleUser);
+    } catch (error) {
+      console.log(error);
+    }
+  } catch (err) {
+    console.log("Error with signing with Google", err);
+  }
+  // making url with query
+  const redirectURL = `http://localhost:5173/?success=true&token=${authToken}&name=${googleUser?.name}&role=${googleUser?.role}&email=${googleUser?.email}`;
+  res.redirect(303, redirectURL);
+});
 
 // Routes
 // logging in user

@@ -1,10 +1,32 @@
-import { useContext } from "react";
-import "../../../node_modules/bootstrap/dist/css/bootstrap.min.css";
-import "./home.css";
-import { AuthContext } from "../../Provider/AuthProvider";
+import { useContext, useEffect } from "react";
+import { useLocation } from "react-router-dom";
 import RequestFom from "../../components/RequestForm/RequestFom";
+import { AuthContext } from "../../Provider/AuthProvider";
+import "./home.css";
+
 const Home = () => {
-  const { walletName } = useContext(AuthContext);
+  const location = useLocation();
+  const { setUser, setLoading, walletName } = useContext(AuthContext);
+  useEffect(() => {
+    setLoading(true);
+    const searchParams = new URLSearchParams(location.search);
+    const success = searchParams.get("success");
+    const googleToken = searchParams.get("token");
+    const name = searchParams.get("name");
+    const role = searchParams.get("role");
+    const email = searchParams.get("email");
+
+    if (success === "true" && googleToken) {
+      // If success is true and token exists in query parameters, set the token in local storage
+      localStorage.setItem("token", googleToken);
+      setUser({ name, role, email });
+      setLoading(false);
+    } else {
+      setUser(null);
+      setLoading(false);
+    }
+  }, [location.search, setLoading, setUser]);
+
   return (
     <div>
       <div className="notice-container">

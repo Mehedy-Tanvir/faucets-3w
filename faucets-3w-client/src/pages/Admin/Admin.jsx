@@ -34,7 +34,7 @@ const Admin = () => {
         <tr>
           <th>No.</th>
           <th>Name</th>
-          <th>Email</th>
+          <th>ID/Email</th>
           <th>Role</th>
         </tr>
       </thead>

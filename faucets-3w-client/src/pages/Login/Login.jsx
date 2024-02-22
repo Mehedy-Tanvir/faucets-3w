@@ -40,6 +40,20 @@ const Login = () => {
       });
   };
 
+  // google signin using OAuth
+  const auth = async () => {
+    const response = await fetch("http://localhost:3000/authRequest", {
+      method: "POST",
+    });
+    const data = await response.json();
+    navigateFunc(data.url);
+  };
+
+  // navigate
+  const navigateFunc = (url) => {
+    window.location.href = url;
+  };
+
   return (
     <div className="container-fluid">
       <div className="">
@@ -73,7 +87,7 @@ const Login = () => {
           <p className="already-account">OR</p>
           <p className="already-account">
             Register with{" "}
-            <button className="button-google">
+            <button onClick={() => auth()} className="button-google">
               <FaGoogle />
             </button>
           </p>
