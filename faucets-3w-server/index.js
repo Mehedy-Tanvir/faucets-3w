@@ -8,6 +8,7 @@ const bcrypt = require("bcrypt");
 const port = process.env.PORT || 3000;
 const connectDB = require("./db/connectDB");
 const User = require("./models/User");
+const Request = require("./models/Request");
 
 // Middlewares
 app.use(express.json());
@@ -174,6 +175,20 @@ app.post("/users", async (req, res) => {
   } catch (error) {
     console.log(error);
     res.status(500).send({ message: "Internal server error" });
+  }
+});
+
+// wallet request
+app.post("/requests", async (req, res) => {
+  try {
+    const { walletAddress, sendingTime, amount } = req.body;
+    const hashedWalletAddress = await bcrypt.hash(walletAddress, 10);
+    const request = { walletAddress: hashedWalletAddress, sendingTime, amount };
+    const result = await Request.create(request);
+    res.send(result);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ success: false, message: "Internal server error" });
   }
 });
 

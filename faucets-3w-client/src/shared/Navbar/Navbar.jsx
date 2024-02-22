@@ -12,7 +12,6 @@ import { AuthContext } from "../../Provider/AuthProvider";
 import toast from "react-hot-toast";
 
 const Navbar = () => {
-  const [walletName, setWalletName] = useState("Arbitrum Rinkeby");
   const [show, setShow] = useState(false);
 
   const handleClose = () => setShow(false);
@@ -20,7 +19,8 @@ const Navbar = () => {
 
   //   logging out user
   const navigate = useNavigate();
-  const { user, loading, setUser, setLoading } = useContext(AuthContext);
+  const { user, loading, setUser, setLoading, walletName, setWalletName } =
+    useContext(AuthContext);
   console.log("from navbar", user);
   const logout = async () => {
     setLoading(true);

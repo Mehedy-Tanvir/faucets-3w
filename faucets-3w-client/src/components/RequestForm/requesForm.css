@@ -1,0 +1,24 @@
+.request-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+.input-title {
+  color: blueviolet;
+  font-weight: 600;
+}
+.disabled-input-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  gap: 8px;
+}
+.recaptcha-container {
+  /* display: flex;
+  justify-content: center;
+  align-items: center; */
+  padding: 4px;
+  margin-bottom: 16px;
+}

@@ -1,0 +1,35 @@
+body {
+  overflow-x: hidden;
+}
+.notice-container {
+  background-color: blueviolet;
+  height: 50px;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: white;
+}
+.notice-text {
+  font-size: 24px;
+}
+.request-title {
+  color: blueviolet;
+  font-size: 32px;
+  text-align: center;
+  margin-top: 50px;
+}
+.request-description {
+  min-width: 300px;
+  margin-left: auto;
+  margin-right: auto;
+  text-align: center;
+}
+.request-container {
+  background-color: #f5f7fd;
+  padding: 10px;
+}
+.wallet-text {
+  text-align: center;
+  color: gray;
+}

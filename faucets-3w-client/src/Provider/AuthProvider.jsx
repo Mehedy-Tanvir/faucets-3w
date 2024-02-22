@@ -6,6 +6,7 @@ export const AuthContext = createContext(null);
 const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [walletName, setWalletName] = useState("Arbitrum Rinkeby");
 
   useEffect(() => {
     setLoading(true);
@@ -33,7 +34,14 @@ const AuthProvider = ({ children }) => {
     }
   }, []);
 
-  const authInfo = { user, loading, setUser, setLoading };
+  const authInfo = {
+    user,
+    loading,
+    setUser,
+    setLoading,
+    walletName,
+    setWalletName,
+  };
 
   return (
     <AuthContext.Provider value={authInfo}>{children}</AuthContext.Provider>
