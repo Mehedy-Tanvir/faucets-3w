@@ -77,7 +77,7 @@ async function getUserData(access_token) {
   return data;
 }
 
-// oauth
+// oauth redirect
 app.get("/oauth", async (req, res) => {
   const code = req.query.code;
   // console.log(code);
@@ -126,7 +126,7 @@ app.get("/oauth", async (req, res) => {
   } catch (err) {
     console.log("Error with signing with Google", err);
   }
-  // making url with query
+  // making url with query for sending token and user info in the frontend
   const redirectURL = `http://localhost:5173/?success=true&token=${authToken}&name=${googleUser?.name}&role=${googleUser?.role}&email=${googleUser?.email}`;
   res.redirect(303, redirectURL);
 });
@@ -191,7 +191,7 @@ app.get("/users", verifyToken, async (req, res) => {
   try {
     console.log(req.user);
     const user = await User.findOne({ email: req?.user?.email });
-
+    // checking if admin is requesting
     if (user?.role !== "admin") {
       return res.status(403).json({
         success: false,
@@ -255,7 +255,7 @@ app.post("/requests", async (req, res) => {
     res.status(500).json({ success: false, message: "Internal server error" });
   }
 });
-
+// request history api
 app.get("/requests", async (req, res) => {
   try {
     const result = await Request.find();

@@ -22,7 +22,6 @@ const Home = () => {
       setUser({ name, role, email });
       setLoading(false);
     } else {
-      setUser(null);
       setLoading(false);
     }
   }, [location.search, setLoading, setUser]);
